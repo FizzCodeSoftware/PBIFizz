@@ -1,0 +1,22 @@
+{
+  "Autostart": {
+    "WithRecursiveSearchPaths": true,
+    "AllWatchers": true,
+    "SearchWorkingDirectory": true,
+    "RecursiveSearchPaths": [
+      "", ""
+    ]
+  },
+  "General": {
+    "ReportFileName": "report.json",
+    "ToolPath": ".pbiFizz\\",
+    "PlaceholderStart": "***placeholder_",
+    "PlaceholderEnd": "***"
+  },
+  "Watchers": [
+    {
+      "Name": "",
+      "Path": ""
+    }
+  ]
+}
