@@ -47,6 +47,7 @@ public class ConsoleCommand
                     break;
                 case ConsoleKey.Enter:
                     Console.Write(pressedKey.KeyChar);
+                    Console.WriteLine();
                     cursorPosition = 0;
                     breakFlag = true;
                     break;
@@ -77,9 +78,17 @@ public class ConsoleCommand
                         Console.CursorLeft += 1;
                     }
                     break;
+                case ConsoleKey.Escape:
+                    keyPresses = "";
+                    ReplaceLine(keyPresses);
+                    cursorPosition = 0;
+                    break;
                 case ConsoleKey.Insert:
                     // TODO toggle Insert mode
                     // Console.CursorSize += 1;
+                    break;
+                case ConsoleKey.Delete:
+                    // TODO delete
                     break;
                 default:
                     {

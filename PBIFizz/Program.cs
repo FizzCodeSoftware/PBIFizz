@@ -29,11 +29,11 @@ public static class Program
 
         var regEx = new Regex("(?<=\")[^\"]*(?=\")|[^\" ]+");
 
+        ConsoleCommand.SetPrompt(GetPrompt());
+
         while (!Terminated)
         {
             Console.Write(GetPrompt());
-            ConsoleCommand.SetPrompt(GetPrompt());
-
             var commandLine = ConsoleCommand.ReadConsoleCommand();
 
             if (string.IsNullOrEmpty(commandLine))
