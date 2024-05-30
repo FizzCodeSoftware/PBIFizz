@@ -14,6 +14,9 @@ public static class Program
     public static void Main(string[] args)
     {
         Config = ConfigurationLoader.Load();
+
+        DsiaplayInfo();
+
         if (args.Length > 0)
         {
             var runner = new AppRunner<AppCommands>(GetAppSettings(""));
@@ -89,46 +92,11 @@ public static class Program
 
     public static void DsiaplayInfo()
     {
-        Console.WriteLine("FizzCode Pbi Fizz tool. To break up reports.json by pages, for better source control and editing it manually or by tools. (C) FizzCode 2024. Developed by gerleim.");
+        Console.WriteLine("FizzCode PBI Fizz tool. To break up reports.json by pages, for better source control and editing manually or by tools. (C) FizzCode 2024. Developed by gerleim.");
         Console.WriteLine("Beta software. No warranty.");
         Console.WriteLine("Requires Power BI Desktop setting to save the report a pbip file.");
         Console.WriteLine("");
-        Console.WriteLine("Autodetect the change of the report.json file set in code PbiFizz.path.");
+        Console.WriteLine("Autodetects the changes of the report.json file(s) set in the configuration.");
         Console.WriteLine("");
-        Console.WriteLine("Commands:");
-        Console.WriteLine("q/quit - exit the program");
-        Console.WriteLine("j/join - join the partial json files to 'report.original.json' file");
-        Console.WriteLine("b/build - join the partial json files and override the original 'report.json' file");
-        Console.WriteLine("d/disjoin - force the breakup of the report.json file. Usable if PbiFizz was not running in autodetect mode.");
-        Console.WriteLine("");
-        Console.WriteLine("Enter command:");
-    }
-
-    public static void PH()
-    {
-        /*var commandLine = Console.ReadLine();
-        while (commandLine != "q" && commandLine != "quit")
-        {
-            if (commandLine == "j" || commandLine == "join")
-            {
-                var fj = new FileJoiner(UserSettings.path, Settings.file);
-                fj.Process();
-            }
-            if (commandLine == "b" || commandLine == "build")
-            {
-                var fj = new FileJoiner(UserSettings.path, Settings.file, true);
-                fj.Process();
-                Console.WriteLine("You need to close and reopen the PBI report for the changes to take effect.");
-                Console.WriteLine("Don't save changes from Power BI, because then it overwrites the report.json file.");
-                Console.WriteLine("");
-            }
-            if (commandLine == "d" || commandLine == "disjoin")
-            {
-                var fd = new FileDisjoiner(UserSettings.path, Settings.file);
-                Console.WriteLine("Processing: " + fd.GetOriginalPathAndFileName());
-                fd.Process();
-            }
-            commandLine = Console.ReadLine();
-        }*/
     }
 }

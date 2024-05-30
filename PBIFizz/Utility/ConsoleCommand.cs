@@ -2,7 +2,7 @@
 
 public class ConsoleCommandTabState
 {
-    public int MatchedCommandIndex { get; set; } = 0;
+    public int MatchedCommandIndex { get; set; } = -1;
     public string? LastEnteredPart { get; set; }
 }
 
@@ -103,10 +103,12 @@ public class ConsoleCommand
                     }
             }
 
-            if (pressedKey.Key != ConsoleKey.Tab
-                && pressedKey.Key != ConsoleKey.RightArrow
-                && pressedKey.Key != ConsoleKey.LeftArrow)
-                TabState.LastEnteredPart = null;
+            if (pressedKey.Key != ConsoleKey.Tab) {
+                TabState.MatchedCommandIndex = -1;
+                if (pressedKey.Key != ConsoleKey.RightArrow
+                    && pressedKey.Key != ConsoleKey.LeftArrow)
+                    TabState.LastEnteredPart = null;
+            }
         }
 
         previousEnteredCommands.Add(keyPresses);
@@ -125,7 +127,7 @@ public class ConsoleCommand
         if (TabState.LastEnteredPart == null)
             TabState.LastEnteredPart = keyPresses;
         
-        var matches = commands.Where(c => c.StartsWith(TabState.LastEnteredPart)).ToList();
+        var matches = commands.Where(c => c.StartsWith(TabState.LastEnteredPart)).OrderBy(c => c).ToList();
         if (matches.Any())
         {
             if (TabState.MatchedCommandIndex < matches.Count - 1)
