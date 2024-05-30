@@ -1,10 +1,24 @@
 ﻿namespace FizzCode.PBIFizz;
 
+public class ConsoleCommandTabState
+{
+    public int MatchedCommandIndex { get; set; } = 0;
+    public string? LastEnteredPart { get; set; }
+}
+
 public class ConsoleCommand
 {
-    private readonly List<string> previousCommands = [];
-    private int previousCommandIndex = 0;
+    private readonly List<string> commands = [];
     private string prompt = "";
+    private readonly List<string> previousEnteredCommands = [];
+    private int previousCommandIndex = 0;
+    private ConsoleCommandTabState TabState = new();
+    private int cursorPosition = 0;
+
+    public ConsoleCommand(List<string> commands)
+    {
+        this.commands = commands.OrderBy(c => c).ToList();
+    }
 
     public string ReadConsoleCommand()
     {
@@ -16,45 +30,113 @@ public class ConsoleCommand
             switch (pressedKey.Key)
             {
                 case ConsoleKey.UpArrow:
-                    if (previousCommandIndex <= previousCommands.Count - 1)
+                    if (previousCommandIndex <= previousEnteredCommands.Count - 1)
                     {
-                        ClearLine();
                         previousCommandIndex += 1;
-                        Console.Write(prompt);
-                        keyPresses = previousCommands[previousCommands.Count - previousCommandIndex];
-                        Console.Write(keyPresses);
+                        keyPresses = HandleNextOrPreviousCommand();
+                        cursorPosition = keyPresses.Length;
                     }
                     break;
                 case ConsoleKey.DownArrow:
                     if (previousCommandIndex > 1)
                     {
-                        ClearLine();
                         previousCommandIndex -= 1;
-                        Console.Write(prompt);
-                        keyPresses = previousCommands[previousCommands.Count - previousCommandIndex];
-                        Console.Write(keyPresses);
+                        keyPresses = HandleNextOrPreviousCommand(); ;
+                        cursorPosition = keyPresses.Length;
                     }
                     break;
                 case ConsoleKey.Enter:
                     Console.Write(pressedKey.KeyChar);
+                    cursorPosition = 0;
                     breakFlag = true;
                     break;
                 case ConsoleKey.Tab:
+                    keyPresses = HandleTab(keyPresses);
+                    ReplaceLine(keyPresses);
+                    cursorPosition = keyPresses.Length;
                     break;
                 case ConsoleKey.Backspace:
-                    keyPresses = keyPresses[..^1];
-                    Console.Write("\b \b");
+                    if (keyPresses.Length > 0)
+                    {
+                        cursorPosition -= 1;
+                        keyPresses = keyPresses[..^1];
+                        Console.Write("\b \b");
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (cursorPosition > 0)
+                    {
+                        cursorPosition -= 1;
+                        Console.CursorLeft -= 1;
+                    }
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (cursorPosition < keyPresses.Length)
+                    {
+                        cursorPosition += 1;
+                        Console.CursorLeft += 1;
+                    }
+                    break;
+                case ConsoleKey.Insert:
+                    // TODO toggle Insert mode
+                    // Console.CursorSize += 1;
                     break;
                 default:
                     {
-                        keyPresses += pressedKey.KeyChar;
-                        Console.Write(pressedKey.KeyChar);
+                        var currentCusrsorPosition = Console.CursorLeft;
+                        keyPresses = keyPresses.Insert(cursorPosition, pressedKey.KeyChar.ToString());
+                        //Console.Write(pressedKey.KeyChar.ToString());
+                        ReplaceLine(keyPresses);
+                        cursorPosition += 1;
+                        Console.CursorLeft = currentCusrsorPosition + 1;
+                        //Console.CursorLeft = currentCusrsorPosition + cursorPosition;
                         break;
                     }
             }
+
+            if (pressedKey.Key != ConsoleKey.Tab
+                && pressedKey.Key != ConsoleKey.RightArrow
+                && pressedKey.Key != ConsoleKey.LeftArrow)
+                TabState.LastEnteredPart = null;
         }
 
-        previousCommands.Add(keyPresses);
+        previousEnteredCommands.Add(keyPresses);
+        return keyPresses;
+    }
+
+    private void ReplaceLine(string keyPresses)
+    {
+        ClearLine();
+        Console.Write(prompt);
+        Console.Write(keyPresses);
+    }
+
+    private string HandleTab(string keyPresses)
+    {
+        if (TabState.LastEnteredPart == null)
+            TabState.LastEnteredPart = keyPresses;
+        
+        var matches = commands.Where(c => c.StartsWith(TabState.LastEnteredPart)).ToList();
+        if (matches.Any())
+        {
+            if (TabState.MatchedCommandIndex < matches.Count - 1)
+                TabState.MatchedCommandIndex += 1;
+            else
+                TabState.MatchedCommandIndex = 0;
+
+            return matches[TabState.MatchedCommandIndex];
+        }
+        else
+        {
+            return keyPresses;
+        }
+    }
+
+    private string HandleNextOrPreviousCommand()
+    {
+        string keyPresses;
+        keyPresses = previousEnteredCommands[^previousCommandIndex];
+        ReplaceLine(keyPresses);
         return keyPresses;
     }
 

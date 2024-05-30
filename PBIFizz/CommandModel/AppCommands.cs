@@ -4,12 +4,6 @@ namespace FizzCode.PBIFizz;
 
 internal partial class AppCommands
 {
-
-    public AppCommands()
-    {
-        SetCommands();
-    }
-
     public AppCommandState State { get { return Program.State; } }
 
     [Command("exit", Description = "Exit from the command-line utility.")]

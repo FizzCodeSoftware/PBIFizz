@@ -9,7 +9,7 @@ public static class Program
     public static Config Config { get; private set; } = new Config();
     public static AppCommandState State { get;} = new AppCommandState();
     public static bool Terminated { get; set; }
-    public static ConsoleCommand ConsoleCommand { get; } = new ConsoleCommand();
+    public static ConsoleCommand ConsoleCommand { get; } = new ConsoleCommand(ConsoleCommandHelper.GetCommands(typeof(AppCommands)));
 
     public static void Main(string[] args)
     {
