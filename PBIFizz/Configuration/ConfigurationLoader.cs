@@ -33,9 +33,7 @@ public static class ConfigurationLoader
 
     public static IConfigurationRoot LoadFromJsonFile(string fileName, bool optional = false)
     {
-        return new ConfigurationBuilder().AddJsonFile(fileName + "-local.json")
+        return new ConfigurationBuilder().AddJsonFile(fileName + ".json", optional).AddJsonFile(fileName + "-local.json", optional: true).AddJsonFile(fileName + "-" + Environment.MachineName + ".json", optional: true)
             .Build();
-        /*return new ConfigurationBuilder().AddJsonFile(fileName + ".json", optional).AddJsonFile(fileName + "-local.json", optional: true).AddJsonFile(fileName + "-" + Environment.MachineName + ".json", optional: true)
-            .Build();*/
     }
 }
