@@ -5,7 +5,7 @@ namespace FizzCode.PBIFizz;
 
 public class FileNameEscaper
 {
-    private const string invalids = "/\\<>\"|";
+    private const string invalids = "/\\<>\"|?";
     private readonly Dictionary<int, char> map = [];
     public readonly char escape = '_';
 
